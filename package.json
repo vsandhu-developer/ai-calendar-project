@@ -8,5 +8,9 @@
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "@langchain/core": "^0.3.76",
+    "@langchain/groq": "^0.2.4"
   }
 }
