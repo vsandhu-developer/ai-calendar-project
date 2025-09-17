@@ -2,9 +2,9 @@ import { tool } from "@langchain/core/tools";
 import { google } from "googleapis";
 import z from "zod";
 import { oauth2Client } from "../server";
-import tokens from "../tokens.json" assert { type: "json" };
+// import tokens from "../tokens.json" assert { type: "json" };
 
-oauth2Client.setCredentials(tokens);
+// oauth2Client.setCredentials(tokens);
 
 const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
