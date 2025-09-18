@@ -3,6 +3,7 @@ import { ChatGroq } from "@langchain/groq";
 import { MessagesAnnotation, StateGraph } from "@langchain/langgraph";
 import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { createEventTool, getEventTool } from "./src/tools";
+import readline from "node:readline/promises";
 
 const tools: any = [createEventTool, getEventTool];
 const toolNode = new ToolNode(tools);
@@ -37,17 +38,35 @@ const workflow = new StateGraph(MessagesAnnotation)
 
 const app = workflow.compile();
 
-async function main() {
-  const result = await app.invoke({
-    messages: [
-      {
-        role: "user",
-        content: `Can you create a meeting with hakam at 19 sep for 3'o clock canadian time zone EST about the design dicussions. hakamsandhu2006@gmail.com this is the email of hakam`,
-      },
-    ],
-  });
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-  console.log("AI: ", result.messages[result.messages.length - 1]?.content);
+async function main() {
+  while(true) {
+    const question = await rl.question("YOU: ");
+
+    console.log("question", question);
+
+    if(question === "bye") {
+      break;
+
+    }
+
+    const result = await app.invoke({
+      messages: [
+        {
+          role: "user",
+          content: question,
+          // content: `Can you create a meeting with hakam at 19 sep for 3'o clock canadian time zone EST about the design dicussions. hakamsandhu2006@gmail.com this is the email of hakam`,
+        },
+      ],
+    });
+
+    console.log("AI: ", result.messages[result.messages.length - 1]?.content);
+  }
+  rl.close();
 }
 
 main();
