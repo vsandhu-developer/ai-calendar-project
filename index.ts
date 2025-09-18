@@ -42,8 +42,7 @@ async function main() {
     messages: [
       {
         role: "user",
-        content:
-          "can you check If I do have any meetings in my calendar tomorrow ?",
+        content: `Can you create a meeting with hakam at 19 sep for 3'o clock canadian time zone EST about the design dicussions. hakamsandhu2006@gmail.com this is the email of hakam`,
       },
     ],
   });
