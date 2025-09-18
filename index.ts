@@ -1,12 +1,13 @@
 import type { AIMessage } from "@langchain/core/messages";
 import { ChatGroq } from "@langchain/groq";
-import { MessagesAnnotation, StateGraph } from "@langchain/langgraph";
+import { MessagesAnnotation, StateGraph, MemorySaver } from "@langchain/langgraph";
 import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { createEventTool, getEventTool } from "./src/tools";
 import readline from "node:readline/promises";
 
 const tools: any = [createEventTool, getEventTool];
 const toolNode = new ToolNode(tools);
+const checkpointer = new MemorySaver();
 
 const groq = new ChatGroq({
   apiKey: process.env.GROQ_API_KEY,
@@ -36,7 +37,7 @@ const workflow = new StateGraph(MessagesAnnotation)
   .addEdge("tools", "assistant")
   .addConditionalEdges("assistant", shouldContinue);
 
-const app = workflow.compile();
+const app = workflow.compile({ checkpointer });
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -62,7 +63,7 @@ async function main() {
           // content: `Can you create a meeting with hakam at 19 sep for 3'o clock canadian time zone EST about the design dicussions. hakamsandhu2006@gmail.com this is the email of hakam`,
         },
       ],
-    });
+    }, { configurable: { thread_id: "1" } });
 
     console.log("AI: ", result.messages[result.messages.length - 1]?.content);
   }
